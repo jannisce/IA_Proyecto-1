@@ -371,8 +371,6 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
-
-
 def cornersHeuristic(state, problem):
     """
     A heuristic for the CornersProblem that you defined.
@@ -499,7 +497,19 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    
+    foodList = foodGrid.asList()
+    foodList.sort(key=lambda food: abs(food[0] -position[0]) + abs(food[1] - position[1]))  # sort foods in ascending order according to distance to pacman
+
+    heuristic_cost = 0
+    for food in foodList:
+        heuristic_cost += (abs(food[0] -position[0]) + abs(food[1] - position[1]))
+    if len(foodList) != 0:
+        heuristic_cost /= len(foodList)
+    else:
+        heuristic_cost = 0
+
+    return heuristic_cost
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
