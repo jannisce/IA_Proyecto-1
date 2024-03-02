@@ -303,7 +303,7 @@ class CornersProblem(search.SearchProblem):
 
         return (x, y, corners_not_visited)
 
-    def isGoalState(self, state: Any):
+    def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
@@ -321,7 +321,7 @@ class CornersProblem(search.SearchProblem):
             return False
 
 
-    def getSuccessors(self, state: Any):
+    def getSuccessors(self, state):
         """
         Returns successor states, the actions they require, and a cost of 1.
 
