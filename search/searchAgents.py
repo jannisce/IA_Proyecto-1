@@ -273,7 +273,7 @@ class CornersProblem(search.SearchProblem):
     You must select a suitable state space and successor function
     """
 
-    def __init__(self, startingGameState):
+    def __init__(self, startingGameState: pacman.GameState):
         """
         Stores the walls, pacman's starting position and corners.
         """
@@ -283,11 +283,8 @@ class CornersProblem(search.SearchProblem):
         self.corners = ((1,1), (1,top), (right, 1), (right, top))
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
-                print 'Warning: no food in corner ' + str(corner)
+                print('Warning: no food in corner ' + str(corner))
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
-        # Please add any code here which you would like to use
-        # in initializing the problem
-        "*** YOUR CODE HERE ***"
 
     def getStartState(self):
         """
@@ -295,16 +292,36 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
 
-    def isGoalState(self, state):
+        """ 
+        state: x,y coordinates of the pacman, corners not visited
+        
+        corners_not_visited: a tuple of corners that are not visited
+        """
+        corners_not_visited = self.corners
+        x,y = self.startingPosition
+
+        return (x, y, corners_not_visited)
+
+    def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
 
-    def getSuccessors(self, state):
+        """ 
+        state: x,y coordinates of the pacman, corners not visited
+        if corners not visited = empty, goal state
+        """
+        x,y, corners_not_visited = state
+
+        if not corners_not_visited:  # if corners_not_visited is empty
+            return True
+        else:
+            return False
+
+
+    def getSuccessors(self, state: Any):
         """
         Returns successor states, the actions they require, and a cost of 1.
 
@@ -326,6 +343,17 @@ class CornersProblem(search.SearchProblem):
 
             "*** YOUR CODE HERE ***"
 
+            x,y, corners_not_visited = state
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            if not self.walls[nextx][nexty]:  # do not hit any walls
+                successor_corners_not_visited_list = list(corners_not_visited)
+                if (nextx, nexty) in successor_corners_not_visited_list:  # if one of the unvisited corners
+                    successor_corners_not_visited_list.remove((nextx, nexty))
+                next_state = (nextx, nexty, tuple(successor_corners_not_visited_list))
+                cost = 1
+                successors.append((next_state, action, cost))
+
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
@@ -341,6 +369,7 @@ class CornersProblem(search.SearchProblem):
             x, y = int(x + dx), int(y + dy)
             if self.walls[x][y]: return 999999
         return len(actions)
+
 
 
 def cornersHeuristic(state, problem):
