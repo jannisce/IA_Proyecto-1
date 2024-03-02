@@ -72,7 +72,8 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-def depthFirstSearch(problem):
+
+def depthFirstSearch(problem: SearchProblem):
     """
     Search the deepest nodes in the search tree first.
 
@@ -82,17 +83,100 @@ def depthFirstSearch(problem):
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
 
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    print("Start:", problem.getStartState())
+    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
 
-def breadthFirstSearch(problem):
+    """
+    need to get the path in just 1 iteration
+    
+    IDEA: each state accessed should know the actions performed to get to that state
+    """
+
+    """ 
+    frontier: a util.Stack of tuples: (state, list of actions required to get to that state)
+    """
+    frontier = util.Stack()
+    frontier.push((problem.getStartState(), []))  # Empty list because no action was performed to get to the start state
+
+    """  
+    explored_nodes: a dictionary: (state, list of actions performed to get to that state)
+    """
+    explored_nodes = {}
+
+    """
+    action_list: a list of actions
+    action_list holds the actions required to get to the PREVIOUS STATE
+    """
+    action_list = []
+
+    while True:
+
+        if frontier.isEmpty():  # failure!
+            return None
+
+        current_node, actions_required = frontier.pop()  # choose a leaf node
+
+        if current_node in explored_nodes.keys():  # node is already explored
+            continue
+
+        action_list = actions_required
+
+        explored_nodes[current_node] = action_list
+
+        if problem.isGoalState(current_node):  # node contains goal state!
+            return explored_nodes[current_node]  # return the action list the current node holds
+
+        for successor, action, cost in problem.getSuccessors(current_node):
+            if successor not in explored_nodes:
+                frontier.push((successor, action_list + [action]))
+
+
+
+def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    """ 
+    frontier: a util.Queue of tuples: (state, list of actions required to get to that state)
+    """
+    frontier = util.Queue()
+    frontier.push((problem.getStartState(), []))  # Empty list because no action was performed to get to the start state
+
+    """  
+    explored_nodes: a dictionary: (state, list of actions performed to get to that state)
+    """
+    explored_nodes = {}
+
+    """
+    action_list: a list of actions
+    action_list holds the actions required to get to the PREVIOUS STATE
+    """
+    action_list = []
+
+    while True:
+
+        if frontier.isEmpty():  # failure!
+            return None
+
+        current_node, actions_required = frontier.pop()  # choose a leaf node
+
+        if current_node in explored_nodes.keys():  # node is already explored
+            continue
+
+        action_list = actions_required
+
+        explored_nodes[current_node] = action_list
+
+        if problem.isGoalState(current_node):  # node contains goal state!
+            return explored_nodes[current_node]  # return the action list the current node holds
+
+        for successor, action, cost in problem.getSuccessors(current_node):
+            if successor not in explored_nodes:
+                frontier.push((successor, action_list + [action]))
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
@@ -106,10 +190,54 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-def aStarSearch(problem, heuristic=nullHeuristic):
+def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    """ 
+    frontier: a util.Queue of tuples: (state, list of actions required to get to that state)
+    """
+    frontier = util.PriorityQueue()
+    frontier.push((problem.getStartState(), []),0)  # Empty list because no action was performed to get to the start state, priority 0 as the cost of start state is 0
+
+    """  
+    explored_nodes: a dictionary: (state, list of actions performed to get to that state)
+    """
+    explored_nodes = {}
+
+    """
+    action_list: a list of actions
+    action_list holds the actions required to get to the PREVIOUS STATE
+    """
+    action_list = []
+
+    """
+    total_cost holds the cost of the PREVIOUS STATE
+    """
+    total_cost = 0
+
+    while True:
+
+        if frontier.isEmpty():  # failure!
+            return None
+
+        current_node, actions_required = frontier.pop()  # choose a leaf node
+
+        if current_node in explored_nodes.keys():  # node is already explored
+            continue
+
+        action_list = actions_required  # action_list is the current node's action list now
+
+        explored_nodes[current_node] = action_list  # update the explored_nodes
+
+        total_cost = problem.getCostOfActions(action_list)  # total_cost is the current node's action list now
+
+        if problem.isGoalState(current_node):  # node contains goal state!
+            return explored_nodes[current_node]  # return the action list the current node holds
+
+        for successor, action, cost in problem.getSuccessors(current_node):
+            if successor not in explored_nodes:
+                frontier.push((successor, action_list + [action]), total_cost + cost + heuristic(successor, problem))
+
 
 
 # Abbreviations
