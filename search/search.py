@@ -73,7 +73,7 @@ def tinyMazeSearch(problem):
     return  [s, s, w, s, w, w, s, w]
 
 
-def depthFirstSearch(problem: SearchProblem):
+def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
 
@@ -135,7 +135,7 @@ def depthFirstSearch(problem: SearchProblem):
 
 
 
-def breadthFirstSearch(problem: SearchProblem):
+def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
 
@@ -190,7 +190,7 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
+def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     """ 
